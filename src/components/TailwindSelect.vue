@@ -1,6 +1,6 @@
 <template>
-    <div class="w-48 rounded-md overflow-hidden shadow bg-white"
-         style="border: 1px solid #DCDFE6;">
+    <div class="w-48 rounded-md overflow-hidden bg-white"
+         style="border: 1px solid #BDBDBD;">
         <div class="h-8 flex justify-start relative align-middle">
             <input class="w-full bg-transparent px-2 py-4 outline-none border-none focus:outline-none text-sm font-mono font-bold"
                    :placeholder="placeholder"

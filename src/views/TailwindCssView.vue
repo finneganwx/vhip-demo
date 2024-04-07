@@ -6,6 +6,7 @@ import {
     VhipPrinter,
 } from "vhip-easybuild-api/dist/vhip-easybuild-api";
 import TailwindSelect from "../components/TailwindSelect.vue";
+import TailwindInput from "../components/TailwindInput.vue";
 
 const btnList = ref([
     {
@@ -46,6 +47,7 @@ const btnList = ref([
     },
 ]);
 
+const batchNum = ref(1);
 const scale = ref(100);
 const paperTypes = ref([
     ...Array.from({ length: 5 }, (_, i) => {
@@ -68,12 +70,15 @@ onMounted(() => {
     VhipBuilder.design(hpt, "#canvas-box", true);
 });
 
+// 浏览器打印（可批量）
 function onBrowserPrintBtnClick() {
-    VhipPrinter.browserPrint(hpt, {});
+    // 将batchNum.vaue转换为number
+    VhipPrinter.browserPrint(hpt, {}, Number(batchNum.value));
 }
 
+// 客户端打印（可批量）
 function onClientPrintBtnClick() {
-    VhipPrinter.clientPrint(hpt, {});
+    VhipPrinter.clientPrint(hpt, {}, batchNum.value);
 }
 
 function onExportToPdf() {
@@ -114,6 +119,16 @@ function onPaperTypeChange(value) {
     <div>
         <!-- 按钮 -->
         <div class="flex justify-start gap-3">
+            <TailwindInput v-model="batchNum"
+                           width="10rem"
+                           type="number">
+                <template #prefix>
+                    <span class="text-gray-500 text-sm"> 批量打印 </span>
+                </template>
+                <template #postfix>
+                    <span class="text-gray-500 text-sm"> 份 </span>
+                </template>
+            </TailwindInput>
             <button class="rounded text-white text-xs font-mono font-bold px-4 py-2"
                     v-for="(item,index) in btnList"
                     :key="index"
@@ -135,28 +150,28 @@ function onPaperTypeChange(value) {
         </div>
 
         <!-- 主体 -->
-        <div class="grid grid-cols-5 gap-4 mt-4">
-            <div class="flex flex-col gap-5">
-                <div class="w-72 h-fit rounded border border-violet-300 shadow-md">
+        <div class="flex gap-4 mt-4 shrink-0">
+            <div class="w-[18rem] flex flex-col gap-5">
+                <div class="h-fit rounded border border-violet-300 shadow-md">
                     <h1 class="text-base font-semibold my-2 mx-4">打印设计组件 - Unorder List Build</h1>
                     <div id="default-elements-box"
                          class="elems-box"></div>
                 </div>
 
-                <div class="w-72 h-fit rounded border border-violet-300 shadow-md">
+                <div class="h-fit rounded border border-violet-300 shadow-md">
                     <h1 class="text-base font-semibold my-2 mx-4">打印设计组件 - HTML Build</h1>
                 </div>
 
-                <div class="w-72 h-fit rounded border border-violet-300 shadow-md">
+                <div class="h-fit rounded border border-violet-300 shadow-md">
                     <h1 class="text-base font-semibold my-2 mx-4">我的元素 - Custom Elements</h1>
                     <div id="my-elems-box"
                          class="elems-box"></div>
                 </div>
             </div>
-            <div class="col-span-3 mt-4 p-4 h-full overflow-x-auto">
+            <div class=" w-9/12 mt-4 p-4 h-full overflow-x-auto">
                 <div id="canvas-box"></div>
             </div>
-            <div class="w-96 h-fit rounded border border-violet-300 shadow-md">
+            <div class="w-[24rem] h-fit rounded border border-violet-300 shadow-md ml-auto">
                 <h1 class="text-xl font-semibold my-2 mx-4">配置选项</h1>
                 <div id="setting-box"></div>
             </div>
@@ -178,15 +193,5 @@ function onPaperTypeChange(value) {
         </dialog>
     </div>
 </template>
-
-<style scoped>
-#setting-box:deep(.hiprint-option-item-submitBtn) {
-    background-color: rebeccapurple;
-    border-radius: 1rem;
-}
-#setting-box:deep(.hiprint-option-item-deleteBtn) {
-    background-color: red;
-    border-radius: 1rem;
-}
-</style>
 <style src="../assets/print-elements/elements-list.scss" scoped lang="scss"></style>
+<style src="../assets/print-elements/setting-panel.scss" scoped lang="scss"></style>
